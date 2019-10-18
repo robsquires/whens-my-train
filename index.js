@@ -10,10 +10,27 @@ function readTime(timeInSeconds) {
 		: `${seconds} seconds`
 }
 
-async function go () {
-	const departures = await getDepartureBoard('FOH')
-	const { departsIn } = findNextDeparture(departures, 'LBG') || { departsIn: 0 }
-	console.log(readTime(departsIn))
-}
 
-go();
+const express = require('express')
+const app = express();
+ 
+app.get('/:from/:to', function (req, res) {
+	const { from, to } = req.params;
+	console.log('params ', from, to)
+	
+	getDepartureBoard(from).then(departures => {
+		console.log('found departures', departures.length)
+		
+		const departure = findNextDeparture(departures, to);
+		if (!departure) {
+			return res.json('Please check destination');
+		}
+
+		res.send(readTime(departure.departsIn))
+	}).catch(err => {
+		console.error(err);
+		res.json('Please check station');
+	});
+})
+ 
+app.listen(3000)
