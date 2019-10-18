@@ -13,6 +13,8 @@ function readTime(timeInSeconds) {
 
 const express = require('express')
 const app = express();
+
+
  
 app.get('/:from/:to', function (req, res) {
 	const { from, to } = req.params;
@@ -32,5 +34,5 @@ app.get('/:from/:to', function (req, res) {
 		res.json('Please check station');
 	});
 })
- 
-app.listen(3000)
+const PORT = process.env.PORT || 5000
+app.listen(PORT, () => console.log(`Listening on ${ PORT }`))
